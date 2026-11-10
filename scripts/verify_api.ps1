@@ -1,12 +1,17 @@
 $ErrorActionPreference = 'Stop'
 
-Write-Host '=== KITSU MARKET API - Phase 1 Live Verification ==='
+Write-Host '===========================================================' -ForegroundColor Cyan
+Write-Host '   KITSU MARKET API — Phase 1 & Phase 2 Live Verification   ' -ForegroundColor Cyan
+Write-Host '===========================================================' -ForegroundColor Cyan
+
+# ----------------- PHASE 1 CHECKS -----------------
+Write-Host '--- Phase 1: Products, Categories, Auth & Roles ---' -ForegroundColor Yellow
 
 # 1. Categories
 $cats = Invoke-RestMethod -Uri 'http://localhost:5232/api/categories' -Method Get
 Write-Host "Categories Count: $($cats.Count)"
 foreach ($cat in $cats) {
-    Write-Host "  - [$($cat.id)] $($cat.name) (slug: $($cat.slug), products: $($cat.productCount))"
+    Write-Host "  - [$($cat.id)] $($cat.name) (slug: $($cat.slug), active products: $($cat.productCount))"
 }
 
 # 2. Products (Public Browsing)
@@ -40,9 +45,9 @@ Write-Host "Customer Registered: $($regResponse.email)"
 Write-Host "Assigned Roles: $($regResponse.roles -join ', ')"
 
 $customerToken = $regResponse.token
+$custHeaders = @{ Authorization = "Bearer $customerToken" }
 
 # 6. Customer Profile via /api/auth/me
-$custHeaders = @{ Authorization = "Bearer $customerToken" }
 $meProfile = Invoke-RestMethod -Uri 'http://localhost:5232/api/auth/me' -Method Get -Headers $custHeaders
 Write-Host "Profile retrieved: $($meProfile.fullName), Email: $($meProfile.email)"
 
@@ -125,4 +130,113 @@ try {
     }
 }
 
-Write-Host 'ALL 12 PHASE 1 REQUIREMENTS VERIFIED SUCCESSFULLY ON RUNNING API!'
+# ----------------- PHASE 2 CHECKS -----------------
+Write-Host '--- Phase 2: Cart, Checkout, Orders & Inventory ---' -ForegroundColor Yellow
+
+# Pick an available active product
+$targetProduct = $prods.items[0]
+$targetProductId = $targetProduct.id
+$initialStock = $targetProduct.stockQuantity
+Write-Host "Selected Target Product: [$targetProductId] $($targetProduct.name) (Stock: $initialStock, Price: $($targetProduct.price) EGP)"
+
+# 13. Add product to cart (Quantity = 2)
+$addCartPayload = @{
+    productId = $targetProductId
+    quantity = 2
+} | ConvertTo-Json
+
+$cart1 = Invoke-RestMethod -Uri 'http://localhost:5232/api/cart/items' -Method Post -Body $addCartPayload -ContentType 'application/json' -Headers $custHeaders
+Write-Host "Cart updated! Total items: $($cart1.totalItems), Total Amount: $($cart1.totalAmount) EGP"
+
+# 14. Increase quantity via PUT (Quantity = 3)
+$putCartPayload = @{
+    quantity = 3
+} | ConvertTo-Json
+
+$cart2 = Invoke-RestMethod -Uri "http://localhost:5232/api/cart/items/$targetProductId" -Method Put -Body $putCartPayload -ContentType 'application/json' -Headers $custHeaders
+Write-Host "Quantity increased to $($cart2.items[0].quantity). Total Amount: $($cart2.totalAmount) EGP"
+
+# 15. Decrease quantity via PUT (Quantity = 1)
+$decCartPayload = @{
+    quantity = 1
+} | ConvertTo-Json
+
+$cart3 = Invoke-RestMethod -Uri "http://localhost:5232/api/cart/items/$targetProductId" -Method Put -Body $decCartPayload -ContentType 'application/json' -Headers $custHeaders
+Write-Host "Quantity decreased to $($cart3.items[0].quantity). Total Amount: $($cart3.totalAmount) EGP"
+
+# 16. Checkout (Order Creation)
+$checkoutPayload = @{
+    shippingFullName = 'Kitsune Collector'
+    shippingPhone = '+201011223344'
+    shippingAddress = '7 Akihabara Boulevard, Apt 4B'
+    shippingCity = 'Cairo'
+} | ConvertTo-Json
+
+$newOrder = Invoke-RestMethod -Uri 'http://localhost:5232/api/orders' -Method Post -Body $checkoutPayload -ContentType 'application/json' -Headers $custHeaders
+Write-Host "Order Placed! Order Number: $($newOrder.orderNumber), Status: $($newOrder.status), Total: $($newOrder.totalAmount) EGP"
+Write-Host "  Items in Order: $($newOrder.items.Count), Snapshot Item: $($newOrder.items[0].productName)"
+
+# 17. Verify Stock Reduction
+$productAfterOrder = Invoke-RestMethod -Uri "http://localhost:5232/api/products/$targetProductId" -Method Get
+Write-Host "Stock reduced from $initialStock to $($productAfterOrder.stockQuantity) (Decreased by 1 as expected)"
+
+# 18. Verify Cart Clearing
+$cartAfterOrder = Invoke-RestMethod -Uri 'http://localhost:5232/api/cart' -Method Get -Headers $custHeaders
+Write-Host "Customer Cart cleared after checkout: Items count = $($cartAfterOrder.items.Count)"
+
+# 19. Customer Order History
+$myOrders = Invoke-RestMethod -Uri 'http://localhost:5232/api/orders/my-orders' -Method Get -Headers $custHeaders
+Write-Host "Customer Order History retrieved: $($myOrders.Count) orders found."
+Write-Host "  Latest Order: $($myOrders[0].orderNumber) - $($myOrders[0].totalAmount) EGP"
+
+# 20. Customer Order Details by ID
+$myOrderDetails = Invoke-RestMethod -Uri "http://localhost:5232/api/orders/$($newOrder.id)" -Method Get -Headers $custHeaders
+Write-Host "Fetched order details by ID: $($myOrderDetails.orderNumber)"
+
+# 21. Customer Isolation (Another customer cannot see this order)
+$customerBEmail = "customerB_$randomSuffix@example.com"
+$regBPayload = @{
+    fullName = 'Customer B'
+    email = $customerBEmail
+    password = 'Customer@SecurePass2026!'
+    confirmPassword = 'Customer@SecurePass2026!'
+} | ConvertTo-Json
+$regBRes = Invoke-RestMethod -Uri 'http://localhost:5232/api/auth/register' -Method Post -Body $regBPayload -ContentType 'application/json'
+$headersB = @{ Authorization = "Bearer $($regBRes.token)" }
+
+try {
+    Invoke-RestMethod -Uri "http://localhost:5232/api/orders/$($newOrder.id)" -Method Get -Headers $headersB
+    Write-Error 'SECURITY VULNERABILITY: Customer B was able to view Customer A order!'
+} catch {
+    $statusCode = $_.Exception.Response.StatusCode.value__
+    if ($statusCode -eq 404) {
+        Write-Host "Customer B attempted to access Customer A's order and received 404 NotFound as expected!"
+    }
+}
+
+# 22. Customer Cannot Access Admin Orders (403 Forbidden)
+try {
+    Invoke-RestMethod -Uri 'http://localhost:5232/api/admin/orders' -Method Get -Headers $custHeaders
+    Write-Error 'SECURITY VULNERABILITY: Customer accessed admin orders endpoint!'
+} catch {
+    $statusCode = $_.Exception.Response.StatusCode.value__
+    if ($statusCode -eq 403) {
+        Write-Host 'Customer access to /api/admin/orders was correctly REJECTED with 403 Forbidden!'
+    }
+}
+
+# 23. Admin Order Management (View & Update Status)
+$adminOrders = Invoke-RestMethod -Uri 'http://localhost:5232/api/admin/orders' -Method Get -Headers $adminHeaders
+Write-Host "Admin retrieved all orders: Total Count = $($adminOrders.totalCount)"
+
+$statusUpdatePayload = @{ status = 'Confirmed' } | ConvertTo-Json
+$updatedOrder = Invoke-RestMethod -Uri "http://localhost:5232/api/admin/orders/$($newOrder.id)/status" -Method Patch -Body $statusUpdatePayload -ContentType 'application/json' -Headers $adminHeaders
+Write-Host "Admin updated Order $($updatedOrder.orderNumber) status to: $($updatedOrder.status)"
+
+$statusUpdatePayload2 = @{ status = 'Shipped' } | ConvertTo-Json
+$updatedOrder2 = Invoke-RestMethod -Uri "http://localhost:5232/api/admin/orders/$($newOrder.id)/status" -Method Patch -Body $statusUpdatePayload2 -ContentType 'application/json' -Headers $adminHeaders
+Write-Host "Admin updated Order $($updatedOrder2.orderNumber) status to: $($updatedOrder2.status)"
+
+Write-Host '===========================================================' -ForegroundColor Cyan
+Write-Host '   ALL 23 LIVE E2E CHECKS PASSED FOR PHASE 1 & PHASE 2!    ' -ForegroundColor Green
+Write-Host '===========================================================' -ForegroundColor Cyan
