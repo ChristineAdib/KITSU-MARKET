@@ -1,0 +1,314 @@
+/* ==========================================================================
+   KITSU MARKET — TOKYO POP EDITORIAL DESIGN SYSTEM
+   Strict Brand Palette & Typography
+   ========================================================================== */
+
+:root {
+  /* Brand Exact Palette */
+  --porcelain: #FFF8F4;
+  --pure-white: #FFFFFF;
+  --sakura-blush: #F6DDD5;
+  --vermilion: #D94D3F;
+  --deep-cherry: #B83F35;
+  --soft-peach: #F0B29A;
+  --matcha-olive: #92996B;
+  --butter-yellow: #F2D27A;
+  --cocoa-brown: #5B443B;
+  --warm-taupe: #8F7B72;
+  --rose-mist: #E9D7D1;
+
+  /* Semantic Mappings (No black, no blue, no purple) */
+  --bg-page: var(--porcelain);
+  --bg-surface: var(--pure-white);
+  --bg-subtle: var(--sakura-blush);
+  --text-primary: var(--cocoa-brown);
+  --text-muted: var(--warm-taupe);
+  --text-inverse: var(--pure-white);
+  --border-light: var(--rose-mist);
+  --border-accent: var(--soft-peach);
+  --primary: var(--vermilion);
+  --primary-hover: var(--deep-cherry);
+  --badge-success: var(--matcha-olive);
+  --badge-warning: var(--butter-yellow);
+
+  /* Typography */
+  --font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', sans-serif;
+  
+  /* Shadows & Radius */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+
+  --shadow-sm: 0 1px 3px rgba(91, 68, 59, 0.05);
+  --shadow-md: 0 4px 16px rgba(91, 68, 59, 0.07);
+  --shadow-lg: 0 12px 32px rgba(91, 68, 59, 0.09);
+
+  --transition-fast: 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-base: 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Base Reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+input, select, textarea {
+  font-family: inherit;
+  color: var(--text-primary);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Container */
+.container {
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding: 0 16px;
+  }
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border-radius: var(--radius-sm);
+  transition: background-color var(--transition-fast), transform var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), box-shadow var(--transition-fast);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  color: var(--pure-white);
+  box-shadow: 0 2px 8px rgba(217, 77, 63, 0.25);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--primary-hover);
+  box-shadow: 0 4px 12px rgba(184, 63, 53, 0.3);
+}
+
+.btn-secondary {
+  background-color: var(--pure-white);
+  color: var(--cocoa-brown);
+  border: 1px solid var(--border-light);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: var(--sakura-blush);
+  border-color: var(--soft-peach);
+}
+
+.btn-outline {
+  background-color: transparent;
+  color: var(--vermilion);
+  border: 1.5px solid var(--vermilion);
+}
+
+.btn-outline:hover:not(:disabled) {
+  background-color: var(--vermilion);
+  color: var(--pure-white);
+}
+
+.btn-sm {
+  padding: 8px 16px;
+  font-size: 0.8125rem;
+}
+
+.btn-lg {
+  padding: 14px 32px;
+  font-size: 1.0625rem;
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.badge-featured {
+  background-color: var(--butter-yellow);
+  color: var(--cocoa-brown);
+}
+
+.badge-instock {
+  background-color: var(--matcha-olive);
+  color: var(--pure-white);
+}
+
+.badge-lowstock {
+  background-color: var(--soft-peach);
+  color: var(--cocoa-brown);
+}
+
+.badge-outstock {
+  background-color: var(--rose-mist);
+  color: var(--warm-taupe);
+}
+
+.badge-vermilion {
+  background-color: var(--vermilion);
+  color: var(--pure-white);
+}
+
+/* Form Controls */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--cocoa-brown);
+  margin-bottom: 6px;
+}
+
+.form-control {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 0.9375rem;
+  background-color: var(--pure-white);
+  border: 1.5px solid var(--rose-mist);
+  border-radius: var(--radius-sm);
+  color: var(--cocoa-brown);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--vermilion);
+  box-shadow: 0 0 0 3px rgba(217, 77, 63, 0.12);
+}
+
+.form-control::placeholder {
+  color: var(--warm-taupe);
+  opacity: 0.7;
+}
+
+.form-error {
+  color: var(--deep-cherry);
+  font-size: 0.8125rem;
+  margin-top: 4px;
+  display: block;
+}
+
+/* Skeleton Loading Animation */
+@keyframes shimmer {
+  0% {
+    background-position: -468px 0;
+  }
+  100% {
+    background-position: 468px 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(
+    to right,
+    #F6DDD5 8%,
+    #FFF8F4 18%,
+    #F6DDD5 33%
+  );
+  background-size: 800px 104px;
+  animation: shimmer 1.5s linear infinite;
+  border-radius: var(--radius-sm);
+}
+
+/* Japanese editorial decorative accent */
+.jp-tag {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--warm-taupe);
+  text-transform: uppercase;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.35s ease forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

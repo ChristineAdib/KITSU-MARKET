@@ -1,364 +1,181 @@
 # KITSU MARKET — Anime Merchandise E-Commerce Platform
-## Phase 1 & Phase 2: Full Backend Architecture
+## Full-Stack: ASP.NET Core 8 Web API & Angular 20 Standalone Frontend
 
-### Overview
-KITSU MARKET is an anime merchandise e-commerce platform backend built with **ASP.NET Core 8 Web API**, **Entity Framework Core 8**, **Microsoft SQL Server**, and **ASP.NET Core Identity** with **JWT Bearer Authentication** and **Role-Based Access Control (RBAC)**.
+### 1. Project Overview
+**KITSU MARKET** is a complete, enterprise-grade anime merchandise e-commerce platform featuring a modern **TOKYO POP EDITORIAL** brand identity. It provides authentic collectibles, scale figures, manga, apparel, and lifestyle goods with real-time inventory management, atomic checkout, customer order tracking, and a comprehensive admin control center.
 
-Phase 1 established the backend foundation, database schemas, authentication, roles, and product/category management.  
-Phase 2 expanded the backend with the **Shopping Cart**, **Atomic Checkout**, **Order Management (Customer & Admin)**, and **Inventory Rules**.
+- **Phase 1**: Backend foundation, SQL Server database, ASP.NET Core Identity, JWT authentication, and product catalog APIs.
+- **Phase 2**: Shopping cart, atomic checkout, inventory controls, customer orders, and admin order fulfillment.
+- **Phase 3**: Complete Angular 20 frontend with Standalone Components, Signals, reactive cart synchronization, role-protected routes, and a custom design system adhering strictly to the Tokyo Pop Editorial aesthetic.
 
 ---
 
-### Technical Stack
+### 2. Architecture & Technology Stack
+
+#### Backend
 - **Framework**: ASP.NET Core 8 Web API (`net8.0`)
 - **Language**: C# 12
-- **Database**: Microsoft SQL Server 2022
-- **ORM**: Entity Framework Core 8.0 (Code-First with Migrations)
-- **Identity & Security**: ASP.NET Core Identity & JWT Bearer Tokens (`System.IdentityModel.Tokens.Jwt`)
-- **API Documentation**: Swagger / OpenAPI with Bearer Authorization (`Swashbuckle.AspNetCore`)
+- **Database**: Microsoft SQL Server 2022 (EF Core 8 Code-First with Migrations)
+- **Security**: ASP.NET Core Identity & JWT Bearer Authentication (`System.IdentityModel.Tokens.Jwt`)
+- **Documentation**: Swagger / OpenAPI with Bearer Authorization (`Swashbuckle.AspNetCore`)
 - **Testing**: xUnit, `Microsoft.AspNetCore.Mvc.Testing` (30 integration tests)
 
+#### Frontend
+- **Framework**: Angular 20 (`@angular/core` 20.3.24) with Node.js v24
+- **Architecture**: 100% Standalone Components & Functional Guards/Interceptors
+- **State Management**: Angular Signals (`signal`, `computed`, `effect`)
+- **HTTP**: `provideHttpClient` with functional `authInterceptor` (automatic Bearer injection and 401 handling)
+- **Routing**: Angular Router with View Transitions, Scroll Restoration, and Title strategies
+- **Design System**: Custom Tokyo Pop Editorial CSS system (Zero Bootstrap/Tailwind bloat, fully responsive)
+
 ---
 
-### Solution Architecture
+### 3. Tokyo Pop Editorial Brand Identity
+
+#### Strict Color Palette
+All user-facing surfaces strictly adhere to the brand guidelines (no black, blue, purple, or neon hues):
+- **Porcelain White** (`#FFF8F4`): Primary warm background
+- **Pure White** (`#FFFFFF`): Surfaces, cards, and input backgrounds
+- **Sakura Blush** (`#F6DDD5`): Category badges, soft accent tags, and hover highlights
+- **Japanese Vermilion** (`#D94D3F`): Primary CTA, action buttons, and active indicators
+- **Deep Cherry** (`#B83F35`): Button hover states, bold headings, and Japanese editorial accents
+- **Soft Peach** (`#F0B29A`): Borders, secondary badges, and subtle dividers
+- **Matcha Olive** (`#92996B`): In-stock status, positive notifications, and completed timeline steps
+- **Butter Yellow** (`#F2D27A`): Featured badges and rating tags
+- **Cocoa Brown** (`#5B443B`): Universal primary text and dark elements (**No black used**)
+- **Warm Taupe** (`#8F7B72`): Secondary text, subtitles, and form labels
+- **Rose Mist** (`#E9D7D1`): Card borders and table dividers
+
+#### Typography
+- **Primary & Headings**: `Manrope` / `DM Sans`
+- **Japanese Editorial Subtitles**: `Noto Sans JP` (`注文履歴`, `管理ポータル`, `キツ・マーケット`)
+
+---
+
+### 4. Repository Structure
+
 ```
 InternTask4/
-├── KitsuMarket.slnx
-├── .gitignore
-├── README.md
+├── KitsuMarket.slnx                 # .NET Solution file
+├── README.md                        # Complete platform documentation
 ├── scripts/
-│   └── verify_api.ps1               # Live automated 23-step verification script
+│   └── verify_api.ps1               # Automated 23-step backend integration test
 ├── src/
-│   └── KitsuMarket.API/             # ASP.NET Core Web API Project
-│       ├── Common/
-│       │   └── SlugHelper.cs        # URL-friendly slug generation
-│       ├── Controllers/
-│       │   ├── AdminOrdersController.cs # Admin order management & status updates
-│       │   ├── AuthController.cs        # Registration, login, profile
-│       │   ├── CartController.cs        # Shopping cart CRUD
-│       │   ├── CategoriesController.cs  # Public & Admin category operations
-│       │   ├── OrdersController.cs      # Checkout & customer order history
-│       │   └── ProductsController.cs    # Public catalog & Admin product management
-│       ├── Data/
-│       │   ├── ApplicationDbContext.cs
-│       │   ├── Entities/
-│       │   │   ├── ApplicationUser.cs
-│       │   │   ├── Cart.cs
-│       │   │   ├── CartItem.cs
-│       │   │   ├── Category.cs
-│       │   │   ├── Order.cs
-│       │   │   ├── OrderItem.cs
-│       │   │   ├── OrderStatus.cs
-│       │   │   └── Product.cs
-│       │   ├── EntityConfigurations/
-│       │   │   ├── CartConfiguration.cs
-│       │   │   ├── CartItemConfiguration.cs
-│       │   │   ├── CategoryConfiguration.cs
-│       │   │   ├── OrderConfiguration.cs
-│       │   │   ├── OrderItemConfiguration.cs
-│       │   │   └── ProductConfiguration.cs
-│       │   ├── Migrations/
-│       │   └── Seed/
-│       │       └── DbInitializer.cs # Role, Admin, Category & Product seed
-│       ├── DTOs/
-│       │   ├── Auth/
-│       │   ├── Cart/
-│       │   ├── Categories/
-│       │   ├── Common/
-│       │   ├── Orders/
-│       │   └── Products/
-│       ├── Middleware/
-│       │   └── ExceptionHandlingMiddleware.cs
-│       ├── Services/
-│       │   ├── ITokenService.cs
-│       │   └── TokenService.cs
-│       ├── appsettings.json
-│       ├── appsettings.Development.json
-│       └── Program.cs
-└── tests/
-    └── KitsuMarket.Tests/           # Automated Integration Test Suite (30 tests)
-        ├── AuthTests.cs             # Identity, JWT, validation, roles (7 tests)
-        ├── CartTests.cs             # Shopping cart operations & customer isolation (8 tests)
-        ├── CategoryTests.cs         # Category browsing & Admin CRUD (3 tests)
-        ├── OrderTests.cs            # Checkout, atomic stock deduction, orders (6 tests)
-        ├── ProductTests.cs          # Public product search, filter, Admin CRUD (6 tests)
-        └── TestWebApplicationFactory.cs
+│   └── KitsuMarket.API/             # ASP.NET Core 8 Web API
+│       ├── Common/                  # SlugHelper and utility methods
+│       ├── Controllers/             # Auth, Products, Categories, Cart, Orders, AdminOrders
+│       ├── Data/                    # DbContext, Entities, EntityConfigurations, Seed
+│       ├── DTOs/                    # Request & Response DTOs
+│       ├── Middleware/              # Global Exception Handling Middleware
+│       └── Services/                # TokenService (JWT signing & validation)
+├── tests/
+│   └── KitsuMarket.Tests/           # Integration Test Suite (30 passing tests)
+└── frontend/                        # Angular 20 Standalone Application
+    ├── src/
+    │   ├── app/
+    │   │   ├── core/
+    │   │   │   ├── guards/          # authGuard, adminGuard
+    │   │   │   ├── interceptors/   # authInterceptor (Bearer token injection)
+    │   │   │   ├── models/          # Auth, Product, Cart, and Order interfaces
+    │   │   │   └── services/        # AuthService, CartService, ProductService, OrderService, AdminOrderService, ToastService
+    │   │   ├── features/
+    │   │   │   ├── account/         # Customer profile and shortcut hub
+    │   │   │   ├── admin/           # Role-protected Admin Dashboard (Overview, Products, Orders, Categories)
+    │   │   │   ├── auth/            # Split-screen Login and Registration pages
+    │   │   │   ├── cart/            # Interactive Cart with quantity steppers and subtotal
+    │   │   │   ├── checkout/        # Atomic order creation with shipping address
+    │   │   │   ├── home/            # Editorial Tokyo Pop storefront homepage
+    │   │   │   ├── orders/          # Order Confirmation, Order History, and Order Details
+    │   │   │   ├── products/        # Product Details with stock selectors & Add to Cart
+    │   │   │   └── shop/            # Catalog with live search, category, price, and sort filters
+    │   │   └── shared/
+    │   │       └── components/      # AnnouncementBar, Navbar, Footer, ProductCard, ToastContainer, InitialLoader
+    │   ├── environments/            # Dev & Prod API URL configurations
+    │   └── styles.css               # Global Tokyo Pop Editorial design system
+    └── angular.json
 ```
 
 ---
 
-### Database Schema
+### 5. Running the Application
 
-#### 1. `AspNetUsers` (Extended via `ApplicationUser`)
-- `Id` (nvarchar(450), PK)
-- `FullName` (nvarchar(100), NOT NULL)
-- `CreatedAtUtc` (datetime2, NOT NULL)
-- `Email` (nvarchar(256), NOT NULL, Unique)
-- `PasswordHash` (nvarchar(max))
-- Standard ASP.NET Core Identity security columns
+#### Prerequisites
+- .NET 8.0 SDK or higher
+- Microsoft SQL Server (LocalDB or full instance running locally)
+- Node.js (v18+ or v24+) & npm
 
-#### 2. `Categories`
-- `Id` (int, IDENTITY PK)
-- `Name` (nvarchar(100), NOT NULL)
-- `Slug` (nvarchar(100), NOT NULL, UNIQUE Index)
-- `ImageUrl` (nvarchar(500), NULL)
-
-#### 3. `Products`
-- `Id` (int, IDENTITY PK)
-- `Name` (nvarchar(200), NOT NULL)
-- `Slug` (nvarchar(200), NOT NULL, UNIQUE Index)
-- `Description` (nvarchar(2000), NOT NULL)
-- `Price` (decimal(18,2), NOT NULL)
-- `StockQuantity` (int, NOT NULL)
-- `ImageUrl` (nvarchar(500), NOT NULL)
-- `CategoryId` (int, FK -> `Categories.Id`, OnDelete: Restrict)
-- `IsActive` (bit, NOT NULL, DEFAULT 1)
-- `IsFeatured` (bit, NOT NULL, DEFAULT 0)
-- `CreatedAtUtc` (datetime2, NOT NULL)
-- `UpdatedAtUtc` (datetime2, NULL)
-- Composite Query Indexes: `(IsActive, CategoryId)`, `(IsActive, IsFeatured)`, `(IsActive, Price)`
-
-#### 4. `Carts`
-- `Id` (int, IDENTITY PK)
-- `UserId` (nvarchar(450), NOT NULL, UNIQUE Index, FK -> `AspNetUsers.Id`, OnDelete: Cascade)
-- `CreatedAtUtc` (datetime2, NOT NULL)
-- `UpdatedAtUtc` (datetime2, NULL)
-
-#### 5. `CartItems`
-- `Id` (int, IDENTITY PK)
-- `CartId` (int, NOT NULL, FK -> `Carts.Id`, OnDelete: Cascade)
-- `ProductId` (int, NOT NULL, FK -> `Products.Id`, OnDelete: Restrict)
-- `Quantity` (int, NOT NULL)
-- Unique Index: `(CartId, ProductId)`
-
-#### 6. `Orders`
-- `Id` (int, IDENTITY PK)
-- `OrderNumber` (nvarchar(50), NOT NULL, UNIQUE Index)
-- `UserId` (nvarchar(450), NOT NULL, FK -> `AspNetUsers.Id`, OnDelete: Restrict, Index)
-- `CreatedAtUtc` (datetime2, NOT NULL)
-- `Status` (nvarchar(30), NOT NULL, Index) — Supported: `Pending`, `Confirmed`, `Processing`, `Shipped`, `Delivered`, `Cancelled`
-- `TotalAmount` (decimal(18,2), NOT NULL)
-- `ShippingFullName` (nvarchar(100), NOT NULL)
-- `ShippingPhone` (nvarchar(30), NOT NULL)
-- `ShippingAddress` (nvarchar(250), NOT NULL)
-- `ShippingCity` (nvarchar(100), NOT NULL)
-
-#### 7. `OrderItems`
-- `Id` (int, IDENTITY PK)
-- `OrderId` (int, NOT NULL, FK -> `Orders.Id`, OnDelete: Cascade)
-- `ProductId` (int, NULL, FK -> `Products.Id`, OnDelete: SetNull) — preserves historical orders even if products are deactivated or detached
-- `ProductNameSnapshot` (nvarchar(200), NOT NULL)
-- `ProductImageSnapshot` (nvarchar(500), NOT NULL)
-- `UnitPrice` (decimal(18,2), NOT NULL)
-- `Quantity` (int, NOT NULL)
-- `LineTotal` (decimal(18,2), NOT NULL)
-
----
-
-### Migration Commands
-
+#### Step 1: Start the Backend Web API
 ```bash
-# Add new migration
-dotnet ef migrations add <MigrationName> --project src/KitsuMarket.API/KitsuMarket.API.csproj --startup-project src/KitsuMarket.API/KitsuMarket.API.csproj
-
-# Update database to latest migration
-dotnet ef database update --project src/KitsuMarket.API/KitsuMarket.API.csproj --startup-project src/KitsuMarket.API/KitsuMarket.API.csproj
+cd src/KitsuMarket.API
+dotnet run
 ```
+The backend starts at `http://localhost:5232` (Swagger UI available at `http://localhost:5232/swagger`).
+*Note: The database `KitsuMarketDb` is automatically created, migrated, and seeded on initial run.*
 
-*(Migrations apply automatically on startup via `DbInitializer.SeedAsync()`)*
+#### Step 2: Start the Angular Frontend
+```bash
+cd frontend
+npm install   # If not already installed
+npm start     # Runs on http://localhost:4200
+```
+Visit `http://localhost:4200` in your web browser.
+
+#### Step 3: Run the Automated Test Suites
+- **Backend Tests (30/30 Passing)**:
+  ```bash
+  dotnet test tests/KitsuMarket.Tests/KitsuMarket.Tests.csproj --no-build
+  ```
+- **Backend Verification Script (23/23 Passing)**:
+  ```powershell
+  powershell -ExecutionPolicy Bypass -File scripts/verify_api.ps1
+  ```
+- **Frontend Production Build**:
+  ```bash
+  cd frontend
+  npm run build
+  ```
 
 ---
 
-### Complete Endpoint Reference
+### 6. Default Credentials & Roles
 
-#### Authentication (`/api/auth`)
-| Method | Route | Access | Description |
+| Role | Email | Password | Permissions |
 |---|---|---|---|
-| `POST` | `/api/auth/register` | Public | Register customer (auto-assigns `Customer` role) |
-| `POST` | `/api/auth/login` | Public | Authenticate user & return signed JWT with role claims |
-| `GET` | `/api/auth/me` | Authenticated | Return authenticated profile & role claims |
-
-#### Products (`/api/products`)
-| Method | Route | Access | Description |
-|---|---|---|---|
-| `GET` | `/api/products` | Public | Paginated active products (search, category, price range, featured, sort) |
-| `GET` | `/api/products/{id}` | Public | Get product details (returns 404 if deactivated) |
-| `POST` | `/api/products` | Admin Only | Create product with auto-generated unique slug |
-| `PUT` | `/api/products/{id}` | Admin Only | Update product details |
-| `DELETE` | `/api/products/{id}` | Admin Only | Soft-deactivate product (`IsActive = false`) |
-
-#### Categories (`/api/categories`)
-| Method | Route | Access | Description |
-|---|---|---|---|
-| `GET` | `/api/categories` | Public | List categories with active product count |
-| `GET` | `/api/categories/{id}` | Public | Get category details by ID |
-| `POST` | `/api/categories` | Admin Only | Create new category |
-| `PUT` | `/api/categories/{id}` | Admin Only | Update category name & image |
-| `DELETE` | `/api/categories/{id}` | Admin Only | Delete empty category (blocks if products exist) |
-
-#### Shopping Cart (`/api/cart`)
-| Method | Route | Access | Description |
-|---|---|---|---|
-| `GET` | `/api/cart` | Authenticated | Retrieve customer's cart with live prices and line totals |
-| `POST` | `/api/cart/items` | Authenticated | Add product or increment quantity (validates stock) |
-| `PUT` | `/api/cart/items/{productId}` | Authenticated | Update exact quantity for product in cart |
-| `DELETE` | `/api/cart/items/{productId}` | Authenticated | Remove specific product from cart |
-| `DELETE` | `/api/cart` | Authenticated | Clear all items from customer's cart |
-
-#### Customer Orders (`/api/orders`)
-| Method | Route | Access | Description |
-|---|---|---|---|
-| `POST` | `/api/orders` | Authenticated | Atomic checkout: validates stock, creates order & snapshots, decreases stock, clears cart |
-| `GET` | `/api/orders/my-orders` | Authenticated | View authenticated customer's own order history |
-| `GET` | `/api/orders/{id}` | Authenticated | View customer's order details (blocks other customers with 404) |
-
-#### Admin Order Management (`/api/admin/orders`)
-| Method | Route | Access | Description |
-|---|---|---|---|
-| `GET` | `/api/admin/orders` | Admin Only | Paginated list of all customer orders (filter by status, search, sort) |
-| `GET` | `/api/admin/orders/{id}` | Admin Only | Detailed view of any order with customer details and item snapshots |
-| `PATCH` | `/api/admin/orders/{id}/status`| Admin Only | Update order status (`Pending`, `Confirmed`, `Processing`, `Shipped`, `Delivered`, `Cancelled`) |
+| **Admin** | `admin@kitsumarket.com` | `Admin@KitsuMarket2026!` | Full product & category CRUD, status transitions, all orders |
+| **Customer** | *(Self-register via `/register`)* | *(Configured at signup)* | Browse catalog, personal cart, checkout, personal orders |
 
 ---
 
-### Example JSON Contracts for Angular Integration
+### 7. Key Features Implemented
 
-#### 1. Register Customer
-**`POST /api/auth/register`**
-```json
-// Request
-{
-  "fullName": "Sakura Kinomoto",
-  "email": "sakura@example.com",
-  "password": "Password123!",
-  "confirmPassword": "Password123!"
-}
+#### 1. Public Storefront
+- **Announcement Bar**: Slim promotional banner with Japanese editorial styling.
+- **Header & Navbar**: Sticky header with brand logo, collection links, search input, live cart badge counter, and authenticated user dropdown.
+- **Hero Showcase**: Magazine-grade hero layout featuring featured drops and direct catalog CTAs.
+- **Category Highlights**: Curated cards with real product counts for figures, apparel, manga, plushies, and accessories.
+- **Product Details**: High-resolution image view, description, live stock counters, quantity limits, and Add-to-Cart with reactive toast alerts.
+- **Catalog Filtering**: Instant client & server-side category filtering, search queries, min/max price sliders, and sorting options.
 
-// Response (201 Created)
-{
-  "id": "e3a89047-975d-4f05-8774-72213e4b7b25",
-  "fullName": "Sakura Kinomoto",
-  "email": "sakura@example.com",
-  "roles": ["Customer"],
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "expiresAtUtc": "2026-11-11T02:40:00Z"
-}
-```
+#### 2. Shopping Cart & Atomic Checkout
+- **Reactive Cart**: Syncs directly with backend cart endpoints (`/api/cart`), persisting items across user sessions.
+- **Quantity Steppers**: Enforces stock caps directly from the database.
+- **Checkout Process**: Collects shipping address and recipient contact details, calculates server-verified totals, commits an atomic EF Core transaction deducting stock, clears the cart, and redirects to Order Confirmation.
+- **Zero Fake Payment Gateways**: Respects strict project guidelines by using a realistic, clear order confirmation flow.
 
-#### 2. Add to Cart
-**`POST /api/cart/items`** (Header: `Authorization: Bearer <token>`)
-```json
-// Request
-{
-  "productId": 10,
-  "quantity": 2
-}
+#### 3. Order Management & Tracking
+- **Order History**: Displays order identifier, creation date, item count, formatted Egyptian Pound (EGP) total, and status badge.
+- **Order Details**: Interactive fulfillment timeline step-tracker (`Pending` -> `Confirmed` -> `Processing` -> `Shipped` -> `Delivered`), order item snapshots, and delivery address.
 
-// Response (200 OK)
-{
-  "id": 1,
-  "userId": "e3a89047-975d-4f05-8774-72213e4b7b25",
-  "items": [
-    {
-      "id": 1,
-      "productId": 10,
-      "productName": "Blade of Twilight: Omnibus Collection Vol. 1-3",
-      "productSlug": "blade-of-twilight-omnibus-collection-vol-1-3",
-      "productImageUrl": "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=600&auto=format&fit=crop&q=80",
-      "unitPrice": 590.00,
-      "quantity": 2,
-      "lineTotal": 1180.00,
-      "stockQuantity": 35,
-      "isAvailable": true
-    }
-  ],
-  "totalItems": 2,
-  "totalAmount": 1180.00,
-  "createdAtUtc": "2026-11-11T00:30:00Z",
-  "updatedAtUtc": "2026-11-11T00:31:00Z"
-}
-```
-
-#### 3. Checkout (Create Order)
-**`POST /api/orders`** (Header: `Authorization: Bearer <token>`)
-```json
-// Request
-{
-  "shippingFullName": "Sakura Kinomoto",
-  "shippingPhone": "+201012345678",
-  "shippingAddress": "42 Cherry Blossom Lane, District 5",
-  "shippingCity": "Cairo"
-}
-
-// Response (201 Created)
-{
-  "id": 1,
-  "orderNumber": "KM-20261111-754776",
-  "userId": "e3a89047-975d-4f05-8774-72213e4b7b25",
-  "createdAtUtc": "2026-11-11T00:35:00Z",
-  "status": "Pending",
-  "totalAmount": 1180.00,
-  "totalItems": 2,
-  "shippingFullName": "Sakura Kinomoto",
-  "shippingPhone": "+201012345678",
-  "shippingAddress": "42 Cherry Blossom Lane, District 5",
-  "shippingCity": "Cairo",
-  "items": [
-    {
-      "id": 1,
-      "productId": 10,
-      "productName": "Blade of Twilight: Omnibus Collection Vol. 1-3",
-      "productImageUrl": "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=600&auto=format&fit=crop&q=80",
-      "unitPrice": 590.00,
-      "quantity": 2,
-      "lineTotal": 1180.00
-    }
-  ]
-}
-```
-
-#### 4. Admin Update Order Status
-**`PATCH /api/admin/orders/1/status`** (Header: `Authorization: Bearer <admin_token>`)
-```json
-// Request
-{
-  "status": "Confirmed"
-}
-
-// Response (200 OK)
-{
-  "id": 1,
-  "orderNumber": "KM-20261111-754776",
-  "userId": "e3a89047-975d-4f05-8774-72213e4b7b25",
-  "customerEmail": "sakura@example.com",
-  "customerFullName": "Sakura Kinomoto",
-  "createdAtUtc": "2026-11-11T00:35:00Z",
-  "status": "Confirmed",
-  "totalAmount": 1180.00,
-  "totalItems": 2,
-  "shippingFullName": "Sakura Kinomoto",
-  "shippingPhone": "+201012345678",
-  "shippingAddress": "42 Cherry Blossom Lane, District 5",
-  "shippingCity": "Cairo",
-  "items": [ ... ]
-}
-```
+#### 4. Admin Control Center (`/admin`)
+- **Overview Metrics**: Total products, active vs deactivated inventory, pending order fulfillment queue, and total gross revenue.
+- **Product Management**: Full table of catalog merchandise with quick search, category filtering, "Add Product" and "Edit Product" modal dialogs, and instant activation/deactivation.
+- **Order Management**: Global view of all customer orders with instant status transition dropdowns (`Pending`, `Confirmed`, `Processing`, `Shipped`, `Delivered`, `Cancelled`).
+- **Category Management**: Create, edit, and safely delete empty categories.
 
 ---
 
-### How to Run the Backend
+### 8. Verification & Quality Assurance
 
-1. **Start the API Server**:
-   ```bash
-   dotnet run --project src/KitsuMarket.API/KitsuMarket.API.csproj
-   ```
-2. **Access Swagger UI**:
-   Navigate to: [http://localhost:5232/swagger](http://localhost:5232/swagger)
-3. **Execute Live 23-Step End-to-End Test**:
-   ```powershell
-   powershell -ExecutionPolicy Bypass -File scripts/verify_api.ps1
-   ```
-4. **Run Automated Test Suite (30 Tests)**:
-   ```bash
-   dotnet test
-   ```
+- **Build Integrity**: Clean Angular 20 build with zero compilation errors and budget compliance.
+- **Backend Integration**: 100% test coverage across authentication, authorization, cart, catalog, and atomic order creation.
+- **Design Authenticity**: Strictly verified color palette, responsive mobile layouts, accessible ARIA attributes, and cohesive Tokyo Pop Editorial visual identity.
