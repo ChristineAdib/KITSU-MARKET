@@ -1,0 +1,16 @@
+## .NET Core
+bin/
+obj/
+*.user
+*.userosscache
+*.suo
+*.userprefs
+appsettings.Production.json
+
+## Visual Studio & VS Code
+.vs/
+.vscode/
+
+## Test Results
+TestResults/
+*.trx

@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/KitsuMarket.API/KitsuMarket.API.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/KitsuMarket.Tests/KitsuMarket.Tests.csproj" />
+  </Folder>
+</Solution>
