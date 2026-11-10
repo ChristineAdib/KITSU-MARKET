@@ -350,8 +350,9 @@ public class ProductsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<IActionResult> UploadImage([FromForm] IFormFile file)
+    public async Task<IActionResult> UploadImage([FromForm] UploadProductImageDto dto)
     {
+        var file = dto?.File;
         if (file == null || file.Length == 0)
         {
             return BadRequest(new { message = "No image file was provided." });
