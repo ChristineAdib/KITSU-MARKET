@@ -79,13 +79,7 @@ import { LoginRequest } from '../../core/models/auth.models';
                 }
               </div>
 
-              <!-- Demo Credentials Helper -->
-              <div class="demo-creds-hint">
-                <span class="hint-label">Development Quick Login:</span>
-                <button type="button" class="demo-chip" (click)="fillAdminCredentials()">
-                  Fill Admin Account
-                </button>
-              </div>
+
 
               <!-- Submit Button -->
               <button 
@@ -311,10 +305,7 @@ export class LoginComponent {
     this.showPassword.update(v => !v);
   }
 
-  fillAdminCredentials(): void {
-    this.email = 'admin@kitsumarket.com';
-    this.password = 'Admin@KitsuMarket2026!';
-  }
+
 
   onSubmit(): void {
     if (!this.email || !this.password) return;
