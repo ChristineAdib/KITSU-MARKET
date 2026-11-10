@@ -16,11 +16,16 @@ namespace KitsuMarket.API.Controllers;
 public class ProductsController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
+    private readonly IWebHostEnvironment _environment;
     private readonly ILogger<ProductsController> _logger;
 
-    public ProductsController(ApplicationDbContext context, ILogger<ProductsController> logger)
+    public ProductsController(
+        ApplicationDbContext context, 
+        IWebHostEnvironment environment, 
+        ILogger<ProductsController> logger)
     {
         _context = context;
+        _environment = environment;
         _logger = logger;
     }
 
@@ -333,5 +338,59 @@ public class ProductsController : ControllerBase
 
         _logger.LogInformation("Product deactivated (soft deleted): {Name} (ID: {Id})", product.Name, product.Id);
         return NoContent();
+    }
+
+    /// <summary>
+    /// Upload product image (Admin only).
+    /// </summary>
+    [HttpPost("upload-image")]
+    [Authorize(Roles = DbInitializer.AdminRole)]
+    [Consumes("multipart/form-data")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<IActionResult> UploadImage([FromForm] IFormFile file)
+    {
+        if (file == null || file.Length == 0)
+        {
+            return BadRequest(new { message = "No image file was provided." });
+        }
+
+        // Limit size to 5MB
+        const long maxSizeBytes = 5 * 1024 * 1024;
+        if (file.Length > maxSizeBytes)
+        {
+            return BadRequest(new { message = "Image size exceeds 5MB limit." });
+        }
+
+        var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp", ".gif" };
+        var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+        if (!allowedExtensions.Contains(extension))
+        {
+            return BadRequest(new { message = "Invalid file type. Allowed formats: JPG, JPEG, PNG, WEBP, GIF." });
+        }
+
+        var webRoot = _environment.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+        var uploadsFolder = Path.Combine(webRoot, "uploads");
+        if (!Directory.Exists(uploadsFolder))
+        {
+            Directory.CreateDirectory(uploadsFolder);
+        }
+
+        var uniqueFileName = $"{Guid.NewGuid():N}{extension}";
+        var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+        using (var stream = new FileStream(filePath, FileMode.Create))
+        {
+            await file.CopyToAsync(stream);
+        }
+
+        var scheme = Request.Scheme;
+        var host = Request.Host.Value;
+        var imageUrl = $"{scheme}://{host}/uploads/{uniqueFileName}";
+
+        _logger.LogInformation("Product image uploaded: {FileName} ({Size} bytes)", uniqueFileName, file.Length);
+        return Ok(new { imageUrl });
     }
 }

@@ -21,7 +21,6 @@ public class CreateProductDto
     public int StockQuantity { get; set; }
 
     [Required(ErrorMessage = "Image URL is required.")]
-    [Url(ErrorMessage = "ImageUrl must be a valid URL.")]
     [StringLength(500, ErrorMessage = "ImageUrl must not exceed 500 characters.")]
     public string ImageUrl { get; set; } = string.Empty;
 

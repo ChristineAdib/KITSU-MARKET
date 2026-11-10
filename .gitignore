@@ -19,3 +19,7 @@ TestResults/
 frontend/node_modules/
 frontend/dist/
 frontend/.angular/
+
+## Uploads
+src/KitsuMarket.API/wwwroot/uploads/*
+!src/KitsuMarket.API/wwwroot/uploads/.gitkeep

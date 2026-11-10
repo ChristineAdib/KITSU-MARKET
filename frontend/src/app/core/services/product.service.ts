@@ -50,6 +50,12 @@ export class ProductService {
     return this.http.get<Category>(`${this.baseUrl}/categories/${id}`);
   }
 
+  uploadProductImage(file: File): Observable<{ imageUrl: string }> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post<{ imageUrl: string }>(`${this.baseUrl}/products/upload-image`, formData);
+  }
+
   // --- Admin Operations ---
   createProduct(dto: CreateProductRequest): Observable<Product> {
     return this.http.post<Product>(`${this.baseUrl}/products`, dto);

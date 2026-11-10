@@ -468,10 +468,74 @@ type AdminTab = 'overview' | 'products' | 'orders' | 'categories';
                   <label class="form-label">Stock Quantity *</label>
                   <input type="number" class="form-control" [(ngModel)]="productForm.stockQuantity" name="stockQuantity" required min="0" />
                 </div>
+              </div>
 
-                <div class="form-group">
-                  <label class="form-label">Image URL *</label>
-                  <input type="url" class="form-control" [(ngModel)]="productForm.imageUrl" name="imageUrl" required />
+              <!-- Product Photo Section with Upload & Live Preview -->
+              <div class="form-group photo-upload-section">
+                <label class="form-label">Product Photo *</label>
+
+                @if (productForm.imageUrl) {
+                  <div class="photo-preview-box">
+                    <img [src]="productForm.imageUrl" alt="Preview" class="preview-img" (error)="onImgError($event)" />
+                    <div class="preview-details">
+                      <span class="preview-badge">✔ Photo Active</span>
+                      <span class="preview-url-text">{{ productForm.imageUrl }}</span>
+                      <div class="preview-actions">
+                        <button type="button" class="btn btn-secondary btn-sm" (click)="productFileInput.click()">
+                          📁 Choose Different Photo
+                        </button>
+                        <button type="button" class="btn btn-danger btn-sm" (click)="clearProductImage()">
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                } @else {
+                  <div class="photo-dropzone" (click)="productFileInput.click()">
+                    @if (isUploadingImage()) {
+                      <div class="uploading-state">
+                        <span class="spinner-icon">⏳</span>
+                        <span>Uploading photo file to server...</span>
+                      </div>
+                    } @else {
+                      <div class="dropzone-content">
+                        <span class="dropzone-icon">📷</span>
+                        <strong>Click to Upload Photo from Device</strong>
+                        <span class="dropzone-hint">Supports PNG, JPG, JPEG, WEBP, GIF (Up to 5MB)</span>
+                      </div>
+                    }
+                  </div>
+                }
+
+                <input 
+                  type="file" 
+                  #productFileInput 
+                  (change)="onProductFileSelected($event)" 
+                  accept="image/png, image/jpeg, image/webp, image/gif" 
+                  style="display: none" 
+                />
+
+                <div class="photo-manual-toggle">
+                  <span class="or-divider">— or paste an image web link —</span>
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    placeholder="https://... or /uploads/..." 
+                    [(ngModel)]="productForm.imageUrl" 
+                    name="imageUrl" 
+                    required 
+                  />
+                </div>
+
+                <div class="photo-presets">
+                  <span class="presets-label">Quick Anime Sample Presets:</span>
+                  <div class="preset-chips">
+                    @for (preset of samplePresets; track preset.label) {
+                      <button type="button" class="preset-chip" (click)="setPresetImage(preset.url)">
+                        {{ preset.label }}
+                      </button>
+                    }
+                  </div>
                 </div>
               </div>
 
@@ -518,9 +582,58 @@ type AdminTab = 'overview' | 'products' | 'orders' | 'categories';
                 <input type="text" class="form-control" [(ngModel)]="categoryForm.name" name="catName" required />
               </div>
 
-              <div class="form-group">
-                <label class="form-label">Image URL (Optional)</label>
-                <input type="url" class="form-control" [(ngModel)]="categoryForm.imageUrl" name="catImageUrl" />
+              <!-- Category Photo Upload & Preview -->
+              <div class="form-group photo-upload-section">
+                <label class="form-label">Category Photo (Optional)</label>
+
+                @if (categoryForm.imageUrl) {
+                  <div class="photo-preview-box">
+                    <img [src]="categoryForm.imageUrl" alt="Category Preview" class="preview-img" (error)="onImgError($event)" />
+                    <div class="preview-details">
+                      <span class="preview-badge">✔ Category Photo</span>
+                      <span class="preview-url-text">{{ categoryForm.imageUrl }}</span>
+                      <div class="preview-actions">
+                        <button type="button" class="btn btn-secondary btn-sm" (click)="catFileInput.click()">
+                          📁 Choose Different Photo
+                        </button>
+                        <button type="button" class="btn btn-danger btn-sm" (click)="categoryForm.imageUrl = ''">
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                } @else {
+                  <div class="photo-dropzone" (click)="catFileInput.click()">
+                    @if (isUploadingImage()) {
+                      <div class="uploading-state">
+                        <span class="spinner-icon">⏳</span>
+                        <span>Uploading photo file to server...</span>
+                      </div>
+                    } @else {
+                      <div class="dropzone-content">
+                        <span class="dropzone-icon">📁</span>
+                        <strong>Click to Upload Category Photo</strong>
+                        <span class="dropzone-hint">Supports PNG, JPG, JPEG, WEBP (Up to 5MB)</span>
+                      </div>
+                    }
+                  </div>
+                }
+
+                <input 
+                  type="file" 
+                  #catFileInput 
+                  (change)="onCategoryFileSelected($event)" 
+                  accept="image/png, image/jpeg, image/webp, image/gif" 
+                  style="display: none" 
+                />
+
+                <input 
+                  type="text" 
+                  class="form-control" 
+                  placeholder="Or paste an image web link (https://...)" 
+                  [(ngModel)]="categoryForm.imageUrl" 
+                  name="catImageUrl" 
+                />
               </div>
 
               <div class="modal-footer">
@@ -1004,6 +1117,164 @@ type AdminTab = 'overview' | 'products' | 'orders' | 'categories';
       border-top: 1px solid var(--color-rose-mist);
     }
 
+    /* Photo Upload & Preview UI */
+    .photo-upload-section {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .photo-dropzone {
+      border: 2px dashed var(--color-soft-peach);
+      border-radius: var(--radius-md);
+      background: var(--color-porcelain);
+      padding: 1.5rem 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .photo-dropzone:hover {
+      border-color: var(--color-vermilion);
+      background: var(--color-white);
+    }
+
+    .dropzone-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .dropzone-icon {
+      font-size: 2rem;
+    }
+
+    .dropzone-content strong {
+      color: var(--color-cocoa);
+      font-size: 0.9375rem;
+    }
+
+    .dropzone-hint {
+      color: var(--color-warm-taupe);
+      font-size: 0.75rem;
+    }
+
+    .uploading-state {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 700;
+      color: var(--color-deep-cherry);
+      font-size: 0.9375rem;
+    }
+
+    .spinner-icon {
+      font-size: 1.25rem;
+    }
+
+    .photo-preview-box {
+      display: flex;
+      gap: 1rem;
+      background: var(--color-porcelain);
+      border: 1px solid var(--color-rose-mist);
+      border-radius: var(--radius-md);
+      padding: 0.875rem;
+      align-items: center;
+    }
+
+    .preview-img {
+      width: 80px;
+      height: 80px;
+      border-radius: var(--radius-sm);
+      object-fit: cover;
+      border: 1px solid var(--color-rose-mist);
+      background: var(--color-white);
+      flex-shrink: 0;
+    }
+
+    .preview-details {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .preview-badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--color-matcha);
+    }
+
+    .preview-url-text {
+      font-size: 0.75rem;
+      color: var(--color-warm-taupe);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-family: monospace;
+    }
+
+    .preview-actions {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.25rem;
+    }
+
+    .photo-manual-toggle {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .or-divider {
+      font-size: 0.75rem;
+      color: var(--color-warm-taupe);
+      text-align: center;
+      letter-spacing: 0.05em;
+    }
+
+    .photo-presets {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      margin-top: 0.25rem;
+    }
+
+    .presets-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--color-warm-taupe);
+    }
+
+    .preset-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .preset-chip {
+      background: var(--color-porcelain);
+      border: 1px solid var(--color-rose-mist);
+      color: var(--color-cocoa);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.25rem 0.65rem;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .preset-chip:hover {
+      background: var(--color-sakura);
+      color: var(--color-deep-cherry);
+      border-color: var(--color-soft-peach);
+    }
+
     @media (max-width: 768px) {
       .admin-header {
         flex-direction: column;
@@ -1059,6 +1330,73 @@ export class AdminDashboardComponent implements OnInit {
     name: '',
     imageUrl: ''
   };
+
+  // Image Upload & Presets State
+  readonly isUploadingImage = signal(false);
+
+  readonly samplePresets = [
+    { label: 'Scale Figure', url: 'https://images.unsplash.com/photo-1563089145-599997674d42?w=800&auto=format&fit=crop&q=80' },
+    { label: 'Manga Art', url: 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=800&auto=format&fit=crop&q=80' },
+    { label: 'Tokyo Apparel', url: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=800&auto=format&fit=crop&q=80' },
+    { label: 'Anime Plush', url: 'https://images.unsplash.com/photo-1563245372-f21724e3856d?w=800&auto=format&fit=crop&q=80' },
+    { label: 'Collectible Pin', url: 'https://images.unsplash.com/photo-1618336753974-aae8e04506aa?w=800&auto=format&fit=crop&q=80' }
+  ];
+
+  clearProductImage(): void {
+    this.productForm.imageUrl = '';
+  }
+
+  setPresetImage(url: string): void {
+    this.productForm.imageUrl = url;
+  }
+
+  onProductFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files || input.files.length === 0) return;
+    const file = input.files[0];
+
+    if (file.size > 5 * 1024 * 1024) {
+      this.toastService.error('Photo file size exceeds the 5MB limit.');
+      return;
+    }
+
+    this.isUploadingImage.set(true);
+    this.productService.uploadProductImage(file).subscribe({
+      next: (res) => {
+        this.productForm.imageUrl = res.imageUrl;
+        this.isUploadingImage.set(false);
+        this.toastService.success('Photo uploaded successfully!');
+      },
+      error: (err) => {
+        this.isUploadingImage.set(false);
+        this.toastService.error(err?.error?.message || 'Failed to upload photo.');
+      }
+    });
+  }
+
+  onCategoryFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files || input.files.length === 0) return;
+    const file = input.files[0];
+
+    if (file.size > 5 * 1024 * 1024) {
+      this.toastService.error('Photo file size exceeds the 5MB limit.');
+      return;
+    }
+
+    this.isUploadingImage.set(true);
+    this.productService.uploadProductImage(file).subscribe({
+      next: (res) => {
+        this.categoryForm.imageUrl = res.imageUrl;
+        this.isUploadingImage.set(false);
+        this.toastService.success('Category photo uploaded successfully!');
+      },
+      error: (err) => {
+        this.isUploadingImage.set(false);
+        this.toastService.error(err?.error?.message || 'Failed to upload category photo.');
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.loadAllData();

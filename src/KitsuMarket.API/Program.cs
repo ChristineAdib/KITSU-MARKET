@@ -145,6 +145,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("AllowAngularDev");
 
+app.UseStaticFiles();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
