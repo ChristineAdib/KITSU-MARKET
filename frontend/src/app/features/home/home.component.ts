@@ -66,29 +66,32 @@ import { ProductCardComponent } from '../../shared/components/product-card/produ
               
               <div class="collage-card main-visual">
                 <img 
-                  src="https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=800&auto=format&fit=crop&q=80" 
-                  alt="Kitsu Guardian Masterpiece Figure"
+                  src="http://localhost:5232/uploads/luffy_gear5.jpg" 
+                  alt="Monkey D. Luffy Gear 5 Gigant Figure"
+                  (error)="onImgError($event)"
                 />
                 <div class="visual-tag">
-                  <span class="tag-title">Featured Scale Figure</span>
-                  <span class="tag-price">2,850.00 EGP</span>
+                  <span class="tag-title">Gear 5 "Gigant" Edition</span>
+                  <span class="tag-price">4,200.00 EGP</span>
                 </div>
               </div>
 
               <div class="collage-card secondary-visual top-right">
                 <img 
-                  src="https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=600&auto=format&fit=crop&q=80" 
-                  alt="Streetwear Anime Hoodie"
+                  src="http://localhost:5232/uploads/gojo_satoru.jpg" 
+                  alt="Gojo Satoru Infinite Void"
+                  (error)="onImgError($event)"
                 />
-                <span class="mini-tag">Cyber Shinobi Apparel</span>
+                <span class="mini-tag">Gojo Satoru (JJK)</span>
               </div>
 
               <div class="collage-card secondary-visual bottom-right">
                 <img 
-                  src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=80" 
-                  alt="Inari Spirit Fox Keychain Charm"
+                  src="http://localhost:5232/uploads/pochita_plush.jpg" 
+                  alt="Pochita Huggable Plush"
+                  (error)="onImgError($event)"
                 />
-                <span class="mini-tag">Spirit Fox Enamel</span>
+                <span class="mini-tag">Pochita 1:1 Plush</span>
               </div>
 
             </div>
@@ -563,7 +566,7 @@ export class HomeComponent implements OnInit {
     });
 
     // 2. Fetch featured products
-    this.productService.getProducts({ isFeatured: true, pageSize: 4 }).subscribe({
+    this.productService.getProducts({ isFeatured: true, pageSize: 8 }).subscribe({
       next: result => {
         this.featuredProducts.set(result.items);
         this.isLoadingFeatured.set(false);
@@ -572,12 +575,16 @@ export class HomeComponent implements OnInit {
     });
 
     // 3. Fetch new arrivals
-    this.productService.getProducts({ sortBy: 'newest', pageSize: 4 }).subscribe({
+    this.productService.getProducts({ sortBy: 'newest', pageSize: 8 }).subscribe({
       next: result => {
         this.newArrivals.set(result.items);
         this.isLoadingNewArrivals.set(false);
       },
       error: () => this.isLoadingNewArrivals.set(false)
     });
+  }
+
+  onImgError(event: Event): void {
+    (event.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=800&auto=format&fit=crop&q=80';
   }
 }
