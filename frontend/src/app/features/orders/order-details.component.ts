@@ -637,6 +637,6 @@ export class OrderDetailsComponent implements OnInit {
   }
 
   onImgError(event: Event): void {
-    (event.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=600&auto=format&fit=crop&q=80';
+    (event.target as HTMLImageElement).src = 'http://localhost:5232/uploads/luffy_gear5.jpg';
   }
 }

@@ -1335,11 +1335,11 @@ export class AdminDashboardComponent implements OnInit {
   readonly isUploadingImage = signal(false);
 
   readonly samplePresets = [
-    { label: 'Scale Figure', url: 'https://images.unsplash.com/photo-1563089145-599997674d42?w=800&auto=format&fit=crop&q=80' },
-    { label: 'Manga Art', url: 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=800&auto=format&fit=crop&q=80' },
-    { label: 'Tokyo Apparel', url: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=800&auto=format&fit=crop&q=80' },
-    { label: 'Anime Plush', url: 'https://images.unsplash.com/photo-1563245372-f21724e3856d?w=800&auto=format&fit=crop&q=80' },
-    { label: 'Collectible Pin', url: 'https://images.unsplash.com/photo-1618336753974-aae8e04506aa?w=800&auto=format&fit=crop&q=80' }
+    { label: 'Luffy Gear 5 Figure', url: 'http://localhost:5232/uploads/luffy_gear5.jpg' },
+    { label: 'Akatsuki Haori', url: 'http://localhost:5232/uploads/akatsuki_haori.jpg' },
+    { label: 'Tanjiro Earrings', url: 'http://localhost:5232/uploads/tanjiro_earrings.jpg' },
+    { label: 'Pochita Plush', url: 'http://localhost:5232/uploads/pochita_plush.jpg' },
+    { label: 'Chainsaw Man Box Set', url: 'http://localhost:5232/uploads/chainsaw_man_box.jpg' }
   ];
 
   clearProductImage(): void {
@@ -1689,6 +1689,6 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   onImgError(event: Event): void {
-    (event.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=600&auto=format&fit=crop&q=80';
+    (event.target as HTMLImageElement).src = 'http://localhost:5232/uploads/luffy_gear5.jpg';
   }
 }

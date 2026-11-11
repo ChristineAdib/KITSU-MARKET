@@ -270,6 +270,6 @@ export class ProductCardComponent {
 
   onImageError(event: Event): void {
     const target = event.target as HTMLImageElement;
-    target.src = 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600&auto=format&fit=crop&q=80';
+    target.src = 'http://localhost:5232/uploads/luffy_gear5.jpg';
   }
 }

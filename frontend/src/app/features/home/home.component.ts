@@ -585,6 +585,6 @@ export class HomeComponent implements OnInit {
   }
 
   onImgError(event: Event): void {
-    (event.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=800&auto=format&fit=crop&q=80';
+    (event.target as HTMLImageElement).src = 'http://localhost:5232/uploads/luffy_gear5.jpg';
   }
 }

@@ -83,31 +83,37 @@ public static class DbInitializer
                 {
                     Name = "Figures",
                     Slug = "figures",
-                    ImageUrl = "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600&auto=format&fit=crop&q=80"
+                    ImageUrl = "http://localhost:5232/uploads/luffy_gear5.jpg"
                 },
                 new()
                 {
                     Name = "Apparel",
                     Slug = "apparel",
-                    ImageUrl = "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=600&auto=format&fit=crop&q=80"
+                    ImageUrl = "http://localhost:5232/uploads/akatsuki_haori.jpg"
                 },
                 new()
                 {
                     Name = "Accessories",
                     Slug = "accessories",
-                    ImageUrl = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=80"
+                    ImageUrl = "http://localhost:5232/uploads/tanjiro_earrings.jpg"
                 },
                 new()
                 {
                     Name = "Posters",
                     Slug = "posters",
-                    ImageUrl = "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?w=600&auto=format&fit=crop&q=80"
+                    ImageUrl = "http://localhost:5232/uploads/ghibli_spirited_away.jpg"
                 },
                 new()
                 {
                     Name = "Manga",
                     Slug = "manga",
-                    ImageUrl = "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&auto=format&fit=crop&q=80"
+                    ImageUrl = "http://localhost:5232/uploads/chainsaw_man_box.jpg"
+                },
+                new()
+                {
+                    Name = "Plushies",
+                    Slug = "plushies",
+                    ImageUrl = "http://localhost:5232/uploads/pochita_plush.jpg"
                 }
             };
 
@@ -124,17 +130,18 @@ public static class DbInitializer
             var accessoriesCategory = await context.Categories.FirstAsync(c => c.Slug == "accessories");
             var postersCategory = await context.Categories.FirstAsync(c => c.Slug == "posters");
             var mangaCategory = await context.Categories.FirstAsync(c => c.Slug == "manga");
+            var plushiesCategory = await context.Categories.FirstAsync(c => c.Slug == "plushies");
 
             var products = new List<Product>
             {
                 new()
                 {
-                    Name = "Kitsu Guardian Ren 1/7 Scale Masterpiece Resin Figure",
-                    Slug = "kitsu-guardian-ren-1-7-scale-masterpiece-resin-figure",
-                    Description = "A meticulously crafted 1/7 scale collector resin figure of Ren, the Fox Shrine Sentinel, featuring dynamic flame aura effects and cherry blossom base.",
-                    Price = 2850.00m,
+                    Name = "Monkey D. Luffy: Gear 5 Gigant Figuarts ZERO - One Piece",
+                    Slug = "monkey-d-luffy-gear-5-gigant-figuarts-zero-one-piece",
+                    Description = "Official Bandai Tamashii Nations Figuarts ZERO statue of Monkey D. Luffy achieving Gear 5 Gigant form in Wano Country. Features translucent lightning aura effects and dynamic comic-style sculpting.",
+                    Price = 4200.00m,
                     StockQuantity = 15,
-                    ImageUrl = "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600&auto=format&fit=crop&q=80",
+                    ImageUrl = "http://localhost:5232/uploads/luffy_gear5.jpg",
                     CategoryId = figuresCategory.Id,
                     IsActive = true,
                     IsFeatured = true,
@@ -142,12 +149,64 @@ public static class DbInitializer
                 },
                 new()
                 {
-                    Name = "Astra Mecha Unit-09 Heavy Armor Display Figure",
-                    Slug = "astra-mecha-unit-09-heavy-armor-display-figure",
-                    Description = "Articulated mechanical warrior figure featuring metallic titanium finish, dual ion blades, and customizable posture joints.",
-                    Price = 3200.00m,
+                    Name = "Gojo Satoru: Infinite Void S.H.Figuarts Figure - Jujutsu Kaisen",
+                    Slug = "gojo-satoru-infinite-void-shfiguarts-figure-jujutsu-kaisen",
+                    Description = "Highly articulated official S.H.Figuarts action figure of Gojo Satoru from Jujutsu Kaisen. Includes interchangeable unmasked head sculpt, blindfold accessory, and domain expansion hand parts.",
+                    Price = 3450.00m,
+                    StockQuantity = 18,
+                    ImageUrl = "http://localhost:5232/uploads/gojo_satoru.jpg",
+                    CategoryId = figuresCategory.Id,
+                    IsActive = true,
+                    IsFeatured = true,
+                    CreatedAtUtc = DateTime.UtcNow
+                },
+                new()
+                {
+                    Name = "Tanjiro Kamado: Hinokami Kagura Dance Figuarts ZERO - Demon Slayer",
+                    Slug = "tanjiro-kamado-hinokami-kagura-dance-figuarts-zero-demon-slayer",
+                    Description = "Dynamic collector statue capturing Tanjiro executing the Hinokami Kagura Dance against Rui. Features vivid translucent flame dragon effect parts and sculpted checkerboard haori in motion.",
+                    Price = 3850.00m,
+                    StockQuantity = 12,
+                    ImageUrl = "http://localhost:5232/uploads/tanjiro_hinokami.jpg",
+                    CategoryId = figuresCategory.Id,
+                    IsActive = true,
+                    IsFeatured = true,
+                    CreatedAtUtc = DateTime.UtcNow
+                },
+                new()
+                {
+                    Name = "Roronoa Zoro: Three-Sword Style Wano Country Figuarts ZERO - One Piece",
+                    Slug = "roronoa-zoro-three-sword-style-wano-country-figuarts-zero-one-piece",
+                    Description = "Authentic Bandai Figuarts ZERO collectible figure of Roronoa Zoro (Zoro-juro) wielding Shusui, Wado Ichimonji, and Sandai Kitetsu with dynamic wind slash sculpting.",
+                    Price = 3600.00m,
+                    StockQuantity = 14,
+                    ImageUrl = "http://localhost:5232/uploads/zoro_wano.jpg",
+                    CategoryId = figuresCategory.Id,
+                    IsActive = true,
+                    IsFeatured = false,
+                    CreatedAtUtc = DateTime.UtcNow
+                },
+                new()
+                {
+                    Name = "Evangelion EVA Unit-01 Test Type Metal Build Figure",
+                    Slug = "evangelion-eva-unit-01-test-type-metal-build-figure",
+                    Description = "Premium die-cast Metal Build figure of EVA Unit-01 designed by Ikuto Yamashita. Features die-cast metal joints, progressive knife, pallet rifle, and display stand.",
+                    Price = 5800.00m,
                     StockQuantity = 8,
-                    ImageUrl = "https://images.unsplash.com/photo-1563089145-599997674d42?w=600&auto=format&fit=crop&q=80",
+                    ImageUrl = "http://localhost:5232/uploads/eva01_metalbuild.jpg",
+                    CategoryId = figuresCategory.Id,
+                    IsActive = true,
+                    IsFeatured = true,
+                    CreatedAtUtc = DateTime.UtcNow
+                },
+                new()
+                {
+                    Name = "Naruto Uzumaki: Rasengan Kizuna Relation Figuarts ZERO - Naruto Shippuden",
+                    Slug = "naruto-uzumaki-rasengan-kizuna-relation-figuarts-zero-naruto-shippuden",
+                    Description = "Dynamic Figuarts ZERO statue of Naruto Uzumaki launching a swirling Rasengan attack. Detailed chakra wind effect sculpting and Sage Mode scroll.",
+                    Price = 3250.00m,
+                    StockQuantity = 16,
+                    ImageUrl = "http://localhost:5232/uploads/naruto_rasengan.jpg",
                     CategoryId = figuresCategory.Id,
                     IsActive = true,
                     IsFeatured = false,
@@ -155,12 +214,12 @@ public static class DbInitializer
                 },
                 new()
                 {
-                    Name = "Cyber Shinobi Kanji Embroidered Oversized Hoodie",
-                    Slug = "cyber-shinobi-kanji-embroidered-oversized-hoodie",
-                    Description = "Heavyweight 400 GSM organic cotton streetwear hoodie with cybernetic fox embroidery and drop-shoulder relaxed silhouette.",
-                    Price = 950.00m,
+                    Name = "Akatsuki Red Cloud Embroidered Streetwear Haori Kimono Cardigan",
+                    Slug = "akatsuki-red-cloud-embroidered-streetwear-haori-kimono-cardigan",
+                    Description = "Premium Japanese streetwear open-front kimono cardigan featuring embroidered Akatsuki red cloud iconography on heavyweight black cotton weave with relaxed unisex fit.",
+                    Price = 1350.00m,
                     StockQuantity = 40,
-                    ImageUrl = "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=600&auto=format&fit=crop&q=80",
+                    ImageUrl = "http://localhost:5232/uploads/akatsuki_haori.jpg",
                     CategoryId = apparelCategory.Id,
                     IsActive = true,
                     IsFeatured = true,
@@ -168,12 +227,12 @@ public static class DbInitializer
                 },
                 new()
                 {
-                    Name = "Neo Tokyo Midnight Racing Graphic Tee",
-                    Slug = "neo-tokyo-midnight-racing-graphic-tee",
-                    Description = "Vintage washed streetwear t-shirt featuring futuristic neon highway artwork and retro Japanese typography.",
-                    Price = 480.00m,
-                    StockQuantity = 65,
-                    ImageUrl = "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=600&auto=format&fit=crop&q=80",
+                    Name = "Survey Corps Wings of Freedom Hooded Field Cloak - Attack on Titan",
+                    Slug = "survey-corps-wings-of-freedom-hooded-field-cloak-attack-on-titan",
+                    Description = "Heavy emerald-green wool blend scout regiment hooded cloak with silver button clasp and large embroidered Wings of Freedom back insignia.",
+                    Price = 1100.00m,
+                    StockQuantity = 45,
+                    ImageUrl = "http://localhost:5232/uploads/survey_corps_cloak.jpg",
                     CategoryId = apparelCategory.Id,
                     IsActive = true,
                     IsFeatured = false,
@@ -181,12 +240,25 @@ public static class DbInitializer
                 },
                 new()
                 {
-                    Name = "Spirit Fox Inari Enamel Keyring Charm",
-                    Slug = "spirit-fox-inari-enamel-keyring-charm",
-                    Description = "Gold-plated hard enamel keychain with two-tone crimson tassels and translucent stained-glass enamel lacquer.",
-                    Price = 180.00m,
-                    StockQuantity = 120,
-                    ImageUrl = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=80",
+                    Name = "Cyberpunk Edgerunners Style Heavy Streetwear Jacket",
+                    Slug = "cyberpunk-edgerunners-style-heavy-streetwear-jacket",
+                    Description = "Futuristic urban oversized tactical streetwear jacket featuring dual-layer weather-resistant fabric, utility cargo pockets, and reflective contrast detailing.",
+                    Price = 1950.00m,
+                    StockQuantity = 25,
+                    ImageUrl = "http://localhost:5232/uploads/cyberpunk_jacket.jpg",
+                    CategoryId = apparelCategory.Id,
+                    IsActive = true,
+                    IsFeatured = false,
+                    CreatedAtUtc = DateTime.UtcNow
+                },
+                new()
+                {
+                    Name = "Tanjiro Kamado Traditional Hanafuda Sterling Silver Earrings",
+                    Slug = "tanjiro-kamado-traditional-hanafuda-sterling-silver-earrings",
+                    Description = "Detailed replica of the sun-rising Hanafuda earrings inherited from Yoriichi Tsugikuni. Made from 925 sterling silver hooks with polished lightweight acrylic enamel drops.",
+                    Price = 580.00m,
+                    StockQuantity = 60,
+                    ImageUrl = "http://localhost:5232/uploads/tanjiro_earrings.jpg",
                     CategoryId = accessoriesCategory.Id,
                     IsActive = true,
                     IsFeatured = true,
@@ -194,65 +266,78 @@ public static class DbInitializer
                 },
                 new()
                 {
-                    Name = "Starlight Katana Desk Mat & Gaming Mousepad",
-                    Slug = "starlight-katana-desk-mat-gaming-mousepad",
-                    Description = "900x400mm waterproof micro-weave surface with non-slip rubber base and edge stitching depicting celestial sword strokes.",
-                    Price = 420.00m,
+                    Name = "Death Note Deluxe Prop Journal with Rules & Feather Quill Pen",
+                    Slug = "death-note-deluxe-prop-journal-with-rules-feather-quill-pen",
+                    Description = "Screen-accurate replica of the Death Note notebook featuring embossed faux-leather cover, printed bilingual usage rules, lined parchment pages, and black feather quill ballpoint pen.",
+                    Price = 690.00m,
                     StockQuantity = 50,
-                    ImageUrl = "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600&auto=format&fit=crop&q=80",
+                    ImageUrl = "http://localhost:5232/uploads/death_note_book.jpg",
                     CategoryId = accessoriesCategory.Id,
                     IsActive = true,
-                    IsFeatured = false,
-                    CreatedAtUtc = DateTime.UtcNow
-                },
-                new()
-                {
-                    Name = "Neo Kyoto Sunset Metallic Foil Art Print",
-                    Slug = "neo-kyoto-sunset-metallic-foil-art-print",
-                    Description = "A2 museum-grade archival matte paper print with hot-stamped holographic gold foil accents showcasing cybernetic pagoda vistas.",
-                    Price = 350.00m,
-                    StockQuantity = 75,
-                    ImageUrl = "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?w=600&auto=format&fit=crop&q=80",
-                    CategoryId = postersCategory.Id,
-                    IsActive = true,
                     IsFeatured = true,
                     CreatedAtUtc = DateTime.UtcNow
                 },
                 new()
                 {
-                    Name = "Valkyrie Squadron Retro Mech Propaganda Poster",
-                    Slug = "valkyrie-squadron-retro-mech-propaganda-poster",
-                    Description = "Lithographic print with distressed vintage textures and bold constructivist anime aerial combat illustrations.",
-                    Price = 280.00m,
-                    StockQuantity = 90,
-                    ImageUrl = "https://images.unsplash.com/photo-1561055657-b9e0bf0fa360?w=600&auto=format&fit=crop&q=80",
-                    CategoryId = postersCategory.Id,
-                    IsActive = true,
-                    IsFeatured = false,
-                    CreatedAtUtc = DateTime.UtcNow
-                },
-                new()
-                {
-                    Name = "Chronicles of the Star Fox: Volume 1 (Special Edition)",
-                    Slug = "chronicles-of-the-star-fox-volume-1-special-edition",
-                    Description = "Original illustrated space-fantasy manga volume featuring 220 pages, bonus colored dust jacket, and character sketch art book.",
-                    Price = 260.00m,
-                    StockQuantity = 110,
-                    ImageUrl = "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&auto=format&fit=crop&q=80",
-                    CategoryId = mangaCategory.Id,
-                    IsActive = true,
-                    IsFeatured = true,
-                    CreatedAtUtc = DateTime.UtcNow
-                },
-                new()
-                {
-                    Name = "Blade of Twilight: Omnibus Collection Vol. 1-3",
-                    Slug = "blade-of-twilight-omnibus-collection-vol-1-3",
-                    Description = "Deluxe hardcover omnibus collecting the epic dark supernatural samurai saga with gilded page edges and author commentary.",
-                    Price = 590.00m,
+                    Name = "Pochita 1:1 Scale Huggable Lifesize Plush - Chainsaw Man",
+                    Slug = "pochita-1-1-scale-huggable-lifesize-plush-chainsaw-man",
+                    Description = "Official Good Smile 1:1 scale lifesize huggable plush toy of Pochita, the Chainsaw Devil. Features ultra-soft orange velboa fabric, fabric chainsaw blade, and tail pull cord.",
+                    Price = 1150.00m,
                     StockQuantity = 35,
-                    ImageUrl = "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=600&auto=format&fit=crop&q=80",
+                    ImageUrl = "http://localhost:5232/uploads/pochita_plush.jpg",
+                    CategoryId = plushiesCategory.Id,
+                    IsActive = true,
+                    IsFeatured = true,
+                    CreatedAtUtc = DateTime.UtcNow
+                },
+                new()
+                {
+                    Name = "Anya Forger's Chimera Lion Familiar Plush Toy - Spy x Family",
+                    Slug = "anya-forgers-chimera-lion-familiar-plush-toy-spy-x-family",
+                    Description = "Anya's secret agent familiar Chimera plushie featuring multi-colored felt lion mane, soft pastel green fairy wings, and embroidered smiling face.",
+                    Price = 890.00m,
+                    StockQuantity = 40,
+                    ImageUrl = "http://localhost:5232/uploads/anya_chimera.jpg",
+                    CategoryId = plushiesCategory.Id,
+                    IsActive = true,
+                    IsFeatured = true,
+                    CreatedAtUtc = DateTime.UtcNow
+                },
+                new()
+                {
+                    Name = "Berserk Deluxe Edition Volume 1 (Leatherbound Hardcover)",
+                    Slug = "berserk-deluxe-edition-volume-1-leatherbound-hardcover",
+                    Description = "Dark Horse oversized 7x10 inch deluxe faux-leather hardcover collecting volumes 1-3 of Kentaro Miura's dark fantasy masterpiece with blood-red foil lettering and satin bookmark ribbon.",
+                    Price = 1850.00m,
+                    StockQuantity = 25,
+                    ImageUrl = "http://localhost:5232/uploads/berserk_deluxe.png",
                     CategoryId = mangaCategory.Id,
+                    IsActive = true,
+                    IsFeatured = true,
+                    CreatedAtUtc = DateTime.UtcNow
+                },
+                new()
+                {
+                    Name = "Chainsaw Man Complete Part 1 Manga Box Set (Vols. 1-11)",
+                    Slug = "chainsaw-man-complete-part-1-manga-box-set-vols-1-11",
+                    Description = "VIZ Media official complete box set collecting all eleven volumes of the Public Safety Arc by Tatsuki Fujimoto. Includes collector box case and exclusive double-sided art poster.",
+                    Price = 2450.00m,
+                    StockQuantity = 20,
+                    ImageUrl = "http://localhost:5232/uploads/chainsaw_man_box.jpg",
+                    CategoryId = mangaCategory.Id,
+                    IsActive = true,
+                    IsFeatured = true,
+                    CreatedAtUtc = DateTime.UtcNow
+                },
+                new()
+                {
+                    Name = "Spirited Away: Yubaba's Bathhouse Sunset Archival Art Print (A2)",
+                    Slug = "spirited-away-yubabas-bathhouse-sunset-archival-art-print-a2",
+                    Description = "Museum-grade heavy matte archival print featuring the magical multi-tiered hot spring bathhouse from Studio Ghibli's Spirited Away during golden hour twilight.",
+                    Price = 480.00m,
+                    StockQuantity = 55,
+                    ImageUrl = "http://localhost:5232/uploads/ghibli_spirited_away.jpg",
+                    CategoryId = postersCategory.Id,
                     IsActive = true,
                     IsFeatured = false,
                     CreatedAtUtc = DateTime.UtcNow
