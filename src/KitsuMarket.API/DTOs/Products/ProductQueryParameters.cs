@@ -11,6 +11,7 @@ public class ProductQueryParameters
     public decimal? MinPrice { get; set; }
     public decimal? MaxPrice { get; set; }
     public bool? IsFeatured { get; set; }
+    public bool? IsActive { get; set; }
     public string? SortBy { get; set; }
 
     public int Page

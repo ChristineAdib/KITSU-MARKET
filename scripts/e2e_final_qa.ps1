@@ -173,13 +173,13 @@ Write-Host "PASS 3.2: Admin Dashboard metrics loaded: $($adminAllProds.totalCoun
 
 # 3.3 Create Product
 $newProdBody = @{
-    name = "QA Masterpiece Mecha $randomSuffix"
-    description = 'Ultra detailed mecha model with articulated joints.'
+    name = "Neon Genesis Evangelion: EVA Unit-02 Asuka Model $randomSuffix"
+    description = 'Ultra detailed authentic anime mecha model with articulated joints.'
     price = 3450.00
     stockQuantity = 8
-    imageUrl = 'https://images.unsplash.com/photo-1563089145-599997674d42'
+    imageUrl = 'http://localhost:5232/uploads/eva01_metalbuild.jpg'
     categoryId = 1
-    isFeatured = $true
+    isFeatured = $false
     isActive = $true
 } | ConvertTo-Json
 
@@ -188,18 +188,18 @@ Write-Host "PASS 3.3: Admin created product: '$($createdProd.name)' (ID: $($crea
 
 # 3.4 Edit Product Information
 $editProdBody = @{
-    name = "QA Masterpiece Mecha $randomSuffix (Custom Edition)"
+    name = "Neon Genesis Evangelion: EVA Unit-02 Asuka Model $randomSuffix (Custom Edition)"
     description = 'Updated description with custom metallic finish.'
     price = 3800.00
     stockQuantity = 8
-    imageUrl = 'https://images.unsplash.com/photo-1563089145-599997674d42'
+    imageUrl = 'http://localhost:5232/uploads/eva01_metalbuild.jpg'
     categoryId = 1
-    isFeatured = $true
+    isFeatured = $false
     isActive = $true
 } | ConvertTo-Json
 
 $editedProd = Invoke-RestMethod -Uri "$baseUrl/products/$($createdProd.id)" -Method Put -Body $editProdBody -ContentType 'application/json' -Headers $adminHeaders
-if ($editedProd.name -eq "QA Masterpiece Mecha $randomSuffix (Custom Edition)" -and $editedProd.price -eq 3800.00) {
+if ($editedProd.name -eq "Neon Genesis Evangelion: EVA Unit-02 Asuka Model $randomSuffix (Custom Edition)" -and $editedProd.price -eq 3800.00) {
     Write-Host "PASS 3.4: Admin edited product name and price successfully" -ForegroundColor Green
 } else {
     throw "Product edit verification failed"

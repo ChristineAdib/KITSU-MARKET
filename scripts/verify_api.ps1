@@ -1,4 +1,4 @@
-$ErrorActionPreference = 'Stop'
+﻿$ErrorActionPreference = 'Stop'
 
 Write-Host '===========================================================' -ForegroundColor Cyan
 Write-Host '   KITSU MARKET API — Phase 1 & Phase 2 Live Verification   ' -ForegroundColor Cyan
@@ -57,7 +57,7 @@ $createProductAttempt = @{
     description = 'Customer trying to add products'
     price = 999.00
     stockQuantity = 10
-    imageUrl = 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f'
+    imageUrl = 'http://localhost:5232/uploads/luffy_gear5.jpg'
     categoryId = 1
 } | ConvertTo-Json
 
@@ -91,7 +91,7 @@ $newProductPayload = @{
     description = 'Special limited edition cherry blossom festival figure.'
     price = 2650.00
     stockQuantity = 20
-    imageUrl = 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f'
+    imageUrl = 'http://localhost:5232/uploads/luffy_gear5.jpg'
     categoryId = 1
     isFeatured = $true
     isActive = $true
@@ -106,7 +106,7 @@ $updatePayload = @{
     description = 'Deluxe edition featuring LED light base.'
     price = 2890.00
     stockQuantity = 15
-    imageUrl = 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f'
+    imageUrl = 'http://localhost:5232/uploads/luffy_gear5.jpg'
     categoryId = 1
     isFeatured = $true
     isActive = $true

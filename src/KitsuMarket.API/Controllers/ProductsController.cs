@@ -42,9 +42,21 @@ public class ProductsController : ControllerBase
             .Include(p => p.Category)
             .AsQueryable();
 
-        // Unless the caller is Admin, restrict to active products only
+        // Active status filtering:
+        // - Non-admin callers can only ever see active products.
+        // - If IsActive is explicitly specified by the caller (e.g. from an Admin Dashboard filter), apply it.
+        // - When browsing featured, categorized, or searched storefront products, always restrict to active products.
+        // - Otherwise, if the caller is an Admin and no explicit IsActive filter is set (general admin catalog query), include all.
         bool isAdmin = User.IsInRole(DbInitializer.AdminRole);
         if (!isAdmin)
+        {
+            queryable = queryable.Where(p => p.IsActive);
+        }
+        else if (query.IsActive.HasValue)
+        {
+            queryable = queryable.Where(p => p.IsActive == query.IsActive.Value);
+        }
+        else if (query.IsFeatured == true || query.CategoryId.HasValue || !string.IsNullOrWhiteSpace(query.Search))
         {
             queryable = queryable.Where(p => p.IsActive);
         }
